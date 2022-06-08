@@ -24,5 +24,5 @@ export type ActionOptions = {
 
 export interface Action {
   options: ActionOptions;
-  execute(page: Page, context: BrowserContext): void;
+  execute(page: Page, context?: BrowserContext): void;
 }
