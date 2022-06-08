@@ -1,0 +1,31 @@
+{
+  "name": "scrapeblocks",
+  "version": "0.0.1",
+  "description": "Write scraping strategies and let Playwright do the rest",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexferrari88/scrapeblocks.git"
+  },
+  "keywords": [
+    "scraping",
+    "scraper",
+    "modular"
+  ],
+  "author": "Alex Ferrari",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alexferrari88/scrapeblocks/issues"
+  },
+  "homepage": "https://github.com/alexferrari88/scrapeblocks#readme",
+  "devDependencies": {
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "playwright": "^1.22.2"
+  }
+}
