@@ -19,9 +19,6 @@ export class Click implements Action {
   }
 
   async execute(page: Page, _context?: BrowserContext): Promise<void> {
-    if (this.options.element == undefined)
-      throw new Error("Click action requires an element to click");
-
     await page.click(this.options.element);
     await delay(100);
   }
