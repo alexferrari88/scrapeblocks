@@ -1,0 +1,405 @@
+﻿body{
+	padding:0;
+	margin: 0;
+	background:#1E1E21;
+	color:#fff;
+}
+h2{
+	font-size: 30px;
+	color:#fff;
+}
+p{
+	color:rgb(238, 231, 231);
+}
+.has-tooltip:not(.tooltip-disabled) {
+	cursor: help;
+	position:relative;
+}
+
+.has-tooltip:not(.tooltip-disabled):hover
+	.tooltip-container {
+	display: block;
+}
+
+.has-tooltip .tooltip-container {
+	display: none;
+	position: absolute;
+	background-color: #BE3760;
+	color:#fff;
+	z-index: 20;
+	bottom: calc(100% + 13px);
+	left: -10px;
+	right: -10px;
+	padding: 16px 20px;
+	border-radius: 8px;
+
+}
+.has-tooltip .tooltip-container:after {
+	width: 0;
+	height: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-top: 10px solid #BE3760;
+	font-size: 0;
+	line-height: 0;
+	content: "";
+	position: absolute;
+	bottom: -10px;
+}
+
+.has-tooltip .tooltip-container h6 {
+	font-weight: 600;
+	font-size: 16px;
+	margin: 0px;
+}
+
+.has-tooltip .tooltip-container  {
+	color: #555;
+	margin-top:4px;
+}
+/* - - - - - - - End Tooltips - - - */
+
+
+
+
+
+#pricing-container * {
+	box-sizing:border-box;
+}
+
+#pricing-container {
+	font-family: "Open Sans", Helvetica, Arial, Lucida, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	max-width: 1080px;
+	margin: 0 auto 50px;
+	justify-content: center;
+	line-height: 1;
+	color: #000;
+}
+
+
+
+/* Cards */
+
+#pricing-cards {
+	display: flex;
+	font-size: 14px;
+}
+
+#pricing-container .price-card {
+	background-color: #33333a;
+	color:#fff;
+	font-family: "Open Sans", Helvetica, Arial, Lucida, sans-serif;
+	display: block;
+	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+	transition: all 0.25s;
+	position: relative;
+	margin: 0 6px;
+	flex-grow: 1;
+	flex-shrink:1;
+}
+
+#pricing-container .price-card:hover {
+	transform: translateY(-5px);
+		box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.14),
+		0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+
+/* - - - - - - - - - Header Section - - - */
+
+#pricing-container .price-card--header {
+	
+	margin: 0;
+	padding: 20px 0;
+	text-align: center;
+}
+
+#pricing-container .price-card--header h4 {
+	margin: 0;
+	padding: 0;
+	font-size: 28px;
+	color: #fff;
+	font-family: "Raleway", Helvetica, Arial, Lucida, sans-serif;
+	font-weight: 700;
+}
+
+
+/* - - - - - - - - - Price Section - - - */
+
+#pricing-container .price-card--price {
+	text-align: center;
+	padding: 28px 0 6px 0;
+}
+
+#pricing-container .price-card--price-text {
+	font-size: 48px;
+}
+
+#pricing-container .price-card--price-number {
+	font-weight: 500;
+	opacity: 0.89;
+}
+
+.odometer div {
+	display: inline-block;
+}
+
+#pricing-container .price-card--price-number:before {
+	content: "$";
+	font-size: 24px;
+	top: -16px;
+	display: inline-block;
+	position: relative;
+}
+
+#pricing-container .price-card--price-number:after {
+	content: "/month";
+	font-size: 12px;
+	display: inline-block;
+	color: grey;
+}
+
+#pricing-container .price-card--price-conditions {
+	padding: 14px 0;
+	color: #888;
+	line-height: 1.5;
+}
+
+
+
+
+/* - - - - - - - - - CTA Button Section - - - */
+
+#pricing-container .price-card--cta {
+	padding: 0 20px 24px;
+	text-align: center;
+}
+
+#pricing-container .price-card--cta--button.btn{
+	min-width:20px;
+	display:block;
+	max-width:183px;
+	margin:0 auto;
+}
+
+
+
+
+
+/* - - - - - - - - - Features Section - - - */
+
+#pricing-container .price-card--features {
+
+	padding: 16px 0 20px;
+}
+
+#pricing-container ul.price-card--features--list {
+	padding: 0 32px;
+	list-style: none;
+	margin: 0;
+}
+
+#pricing-container li.price-card--features--item {
+	margin: 8px 0;
+	padding-left: 8px;
+	line-height: 1.5;
+	position: relative;
+}
+
+#pricing-container
+	li.price-card--features--item:not(.features-disabled):before {
+	content: "✓";
+	color: #BE3760;
+	display: block;
+	position: absolute;
+	left: -8px;
+}
+
+#pricing-container li.price-card--features--item.features-highlight {
+	/* 	font-weight: 600; */
+}
+
+#pricing-container li.price-card--features--item.features-disabled {
+	opacity: 0.1;
+	/* 	text-decoration: line-through; */
+}
+
+
+
+
+/* - - - - - - - - - Mobile Features Toggle - - - */
+
+#pricing-container .price-card--mobile-features-toggle {
+	text-align: center;
+	margin: 24px 0 0;
+	padding: 16px 0;
+	cursor: pointer;
+	display: none;
+	color: green;
+}
+
+#pricing-container .price-card--mobile-features-toggle:after {
+	content: "Show All Features ▾";
+}
+#pricing-container .price-card--mobile-features-toggle.hideall:after {
+	content: "Hide Features ▴";
+}
+
+/* - - - - - - - - - Hero Card Styles - - - */
+
+#pricing-container .price-card--hero {
+	margin: -38px 6px 0;
+	/* 	width:31%; */
+	z-index: 10;
+}
+
+#pricing-container .price-card--hero-text {
+	background-color: #BE3760;
+	height: 38px;
+	color: white;
+	line-height: 38px;
+	text-align: center;
+	font-weight: 600;
+}
+
+/* - - - - - - - - - Only Yearly Basic Styles - - - */
+
+#pricing-container .only-yearly {
+	position: relative;
+}
+
+#pricing-container .only-yearly .price-card--price-number {
+	transition: opacity 0.2s;
+}
+
+#pricing-container .only-yearly .only-yearly--text {
+	position: absolute;
+	top: -0.2em;
+	left: 0;
+	right: 0;
+	display: none;
+}
+#pricing-container .only-yearly .only-yearly--text span {
+	font-size: 14px;
+}
+
+#pricing-container .only-yearly.if-monthly .price-card--price-number {
+	opacity: 0;
+}
+
+#pricing-container .only-yearly.if-monthly .only-yearly--text {
+	display: block;
+}
+
+/* - - - - - - - - - Switch Section - - - */
+
+#pricing-switch {
+	margin: 80px auto 100px;
+	text-align: center;
+	line-height: 1.4;
+	position: relative;
+	max-width: 1080px;
+}
+
+#pricing-switch .switch-label {
+	display: inline-block;
+	width: 200px;
+	text-align: center;
+	opacity: 0.4;
+	font-size: 16px;
+	cursor: pointer;
+	padding: 0 20px;
+}
+
+#pricing-switch .switch-label .save-money {
+	color: #4caf50;
+	font-style: italic;
+	padding-left: 8px;
+}
+#pricing-switch .save-money--mobile {
+	color: #4caf50;
+	font-style: italic;
+	padding-top: 22px;
+	display: none;
+}
+
+#pricing-switch .switch-label.active {
+	font-size: 18px;
+	opacity: 1;
+}
+#pricing-switch .switch-label-monthly {
+	text-align: right;
+}
+#pricing-switch .switch-label-yearly {
+	text-align: left;
+}
+
+#pricing-switch .switch {
+	position: relative;
+	display: inline-block;
+	width: 60px;
+	height: 34px;
+	vertical-align: -50%;
+	margin: 0;
+}
+
+#pricing-switch .switch input {
+	display: none;
+}
+
+#pricing-switch .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #BE3760;
+	border-radius: 34px;
+	-webkit-transition: 0.1s;
+	transition: 0.1s;
+}
+
+#pricing-switch .slider:before {
+	position: absolute;
+	content: "";
+	height: 26px;
+	width: 26px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	border-radius: 50%;
+	-webkit-transition: 0.1s;
+	transition: 0.1s;
+}
+
+.btn{
+	width: 200px;
+	height:45px;
+	background: transparent;
+	border:1px solid #BE3760;
+	color:#fff;
+	border-radius: 5px;
+	cursor: pointer;
+margin:2em 5em;
+}
+.btn-pro{
+	width: 200px;
+	height:45px;
+	background: #BE3760;
+	border:none;
+	color:#fff;
+	border-radius: 5px;
+	cursor: pointer;
+margin:2em 5em;
+}
+.switch-label{
+	color:#fff;
+}
+.active{
+	color: #BE3760;
+}
+strong{
+	color:#fff;
+}

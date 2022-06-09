@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page for Actions</title>
+</head>
+
+<body>
+    <div class="main" style="position: relative; border: 2px solid blue; height: 2000px;">
+        <button id="btn-revealer" onclick="revealSecret(false)">Reveal!</button>
+        <button id="cookie-btn-revealer" onclick="revealSecret(true)">Reveal with cookie!</button>
+        <input id="input-revealer" type="text" placeholder="Type the secret word" style="display: block;">
+
+        <div class="container">
+            <p>You typed: <span id="you-typed"></span></p>
+            <label for="select-revealer">Select what to do:</label>
+
+            <select name="select-revealer" id="select-revealer">
+                <option value="">--Please choose an option--</option>
+                <option value="yes">Show password</option>
+                <option value="no">Do nothing</option>
+            </select>
+        </div>
+    </div>
+    <script>
+        const divContainer = document.querySelector(".container");
+        const inputRevealer = document.getElementById("input-revealer");
+        const selectRevealer = document.getElementById("select-revealer");
+        const youTypedElement = document.getElementById("you-typed");
+
+        setTimeout(function () {
+            revealHint();
+        }, 2000);
+
+        window.onscroll = function (ev) {
+            if (isContentScrolledToBottom(document.querySelector(".main"))) {
+                revealSecret(false)
+            }
+        };
+
+
+        inputRevealer.addEventListener('keyup', function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                revealSecret(true)
+            } else {
+                youTypedElement.innerHTML = event.target.value;
+            }
+        });
+
+        selectRevealer.addEventListener('change', function (event) {
+            if (event.target.value === "no") return;
+            revealSecret(false);
+        });
+
+        function isContentScrolledToBottom(element) {
+            const rest = element.scrollHeight - element.scrollTop;
+            return Math.abs(element.clientHeight - rest) < 1;
+        }
+
+        function revealHint() {
+            const p = document.createElement("p");
+            p.id = "hint";
+            p.innerHTML = "terces";
+            divContainer.appendChild(p);
+        }
+
+        function revealSecret(check) {
+            if (inputRevealer.value !== "secret" && check) return;
+            if (document.getElementById("secret")) return;
+            const secretCookie = getCookie("secretCookie");
+            if (secretCookie && secretCookie !== "secret" && check) return;
+            const p = document.createElement("p");
+            p.id = "secret";
+            p.innerHTML = "This is a secret message!";
+            divContainer.appendChild(p);
+            const a = document.createElement("a");
+            a.id = "concealer";
+            a.href = "#";
+            a.innerHTML = "Conceal!";
+            a.onclick = concealSecret;
+            divContainer.appendChild(a);
+        }
+
+        function concealSecret() {
+            document.getElementById("secret").remove();
+            document.getElementById("concealer").remove();
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+    </script>
+</body>
+
+</html>
