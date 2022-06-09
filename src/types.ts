@@ -1,4 +1,4 @@
-﻿import { BrowserContext, Cookie, Page } from "playwright-core";
+﻿import { BrowserContext, Page } from "playwright";
 
 export interface Command {
   execute(): void;
@@ -19,7 +19,7 @@ export type ActionType =
 export type ActionOptions = {
   element?: string | undefined;
   value?: string | undefined;
-  cookie?: Cookie | undefined;
+  cookies?: Parameters<BrowserContext["addCookies"]>[0] | undefined;
 };
 
 export interface Action {

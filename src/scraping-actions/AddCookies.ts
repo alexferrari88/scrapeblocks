@@ -8,18 +8,18 @@ type CookieOptions = {
     "element" | "value"
   >]-?: ActionOptions[P];
 };
-export class Cookie implements Action {
+export class AddCookies implements Action {
   options: CookieOptions;
 
   constructor(options: CookieOptions) {
     validateOptions(options, {
-      cookie: "Cookie action requires a cookie to add",
+      cookies: "Cookie action requires a cookie to add",
     });
     this.options = options;
   }
 
   async execute(_page: Page, context: BrowserContext): Promise<void> {
-    await context.addCookies([this.options.cookie]);
+    await context.addCookies(this.options.cookies);
     await delay(100);
   }
 }
