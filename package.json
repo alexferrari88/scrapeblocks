@@ -4,7 +4,8 @@
   "description": "Write scraping strategies and let Playwright do the rest",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "rm -rf ./dist && tsc"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,9 @@
   },
   "homepage": "https://github.com/alexferrari88/scrapeblocks#readme",
   "devDependencies": {
+    "@types/jest": "^28.1.1",
+    "jest": "^28.1.1",
+    "ts-jest": "^28.0.4",
     "ts-node": "^10.8.1",
     "typescript": "^4.7.3"
   },
