@@ -3,7 +3,7 @@ import { Action, ActionOptions } from "../types";
 import { delay, validateOptions } from "../utils/utils";
 
 type SelectOptions = {
-  [P in keyof ActionOptions as Exclude<P, "cookie">]-?: ActionOptions[P];
+  [P in keyof ActionOptions as Exclude<P, "cookies">]-?: ActionOptions[P];
 };
 export class Select implements Action {
   options: SelectOptions;

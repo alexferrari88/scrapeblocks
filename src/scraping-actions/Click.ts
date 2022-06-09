@@ -5,7 +5,7 @@ import { delay, validateOptions } from "../utils/utils";
 type ClickOptions = {
   [P in keyof ActionOptions as Exclude<
     P,
-    "cookie" | "value"
+    "cookies" | "value"
   >]-?: ActionOptions[P];
 };
 export class Click implements Action {

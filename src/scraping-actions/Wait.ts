@@ -5,7 +5,7 @@ import { delay, validateOptions } from "../utils/utils";
 type WaitOptions = {
   [P in keyof ActionOptions as Exclude<
     P,
-    "element" | "cookie"
+    "element" | "cookies"
   >]-?: ActionOptions[P];
 };
 export class Wait implements Action {

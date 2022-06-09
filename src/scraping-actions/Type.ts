@@ -3,7 +3,7 @@ import { Action, ActionOptions } from "../types";
 import { delay, validateOptions } from "../utils/utils";
 
 type TypeOptions = {
-  [P in keyof ActionOptions as Exclude<P, "cookie">]-?: ActionOptions[P];
+  [P in keyof ActionOptions as Exclude<P, "cookies">]-?: ActionOptions[P];
 };
 export class Type implements Action {
   options: TypeOptions;
@@ -17,7 +17,7 @@ export class Type implements Action {
   }
 
   async execute(page: Page, _context?: BrowserContext): Promise<void> {
-    await page.type(this.options.element, this.options.value);
+    await page.type(this.options.element, this.options.value, { delay: 100 });
     await delay(100);
   }
 }
