@@ -40,13 +40,30 @@ export class Scraper<T> {
       });
     if (!this.page)
       this.page = await (this.context as BrowserContext).newPage();
-    if (this.url) await this.page.goto(this.url);
+    if (!this.url) throw new Error("URL is required");
+    try {
+      if (this.url) await this.page.goto(this.url);
+    } catch (error) {
+      await this.browser?.close();
+      throw error;
+    }
     if (this.actions) {
       for (let action of this.actions) {
-        await action.execute(this.page, this.context);
+        try {
+          await action.execute(this.page, this.context);
+        } catch (error) {
+          await this.browser?.close();
+          throw error;
+        }
       }
     }
-    const result = await this.strategy.execute(this.page);
+    let result: T;
+    try {
+      result = await this.strategy.execute(this.page);
+    } catch (error) {
+      await this.browser?.close();
+      throw error;
+    }
     if (this.browser) await this.browser.close();
     return result;
   }
