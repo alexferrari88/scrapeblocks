@@ -1,10 +1,12 @@
 ﻿![ScrapeBlocks Logo](logo.png)
 
-## Badges
+<div align="center">
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 [![Version](https://img.shields.io/github/package-json/v/alexferrari88/scrapeblocks?style=flat-square)](https://img.shields.io/github/package-json/v/alexferrari88/scrapeblocks?style=flat-square)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/alexferrari88/scrapeblocks?style=flat-square)](https://img.shields.io/github/last-commit/alexferrari88/scrapeblocks?style=flat-square)
+
+</div>
 
 # ScrapeBlocks
 
@@ -14,7 +16,7 @@ You can set actions to be performed before starting scraping and you can also de
 
 Start with predefined actions and strategies in a matter of minutes. You can also write your own or use ones from the community.
 
-## Who is this for?
+## Who is this for? 🤔
 
 - I just want to start scraping right now with little effort as possible
 - I have a complicated scraping workflow that I want to simplify with still getting the same results
@@ -26,7 +28,7 @@ You can use it with its batteries included or as extension to Playwright.
 
 Whether you are a scraping-hero or just want to monitor the price for that product but you don't know much about scraping, ScrapeBlocks is here for you.
 
-## Features
+## Features 🚀
 
 - **Pre-scraping actions**: perform actions before running a scraping strategy
   - Example use-case: you need to click something before your target becomes visible
@@ -35,7 +37,7 @@ Whether you are a scraping-hero or just want to monitor the price for that produ
 - **Fully customizible (or not)**: you can use it batteries included or use your own Playwright instances
 - **Easy to start with**: it's based on Playwright!
 
-### Actions included
+### Actions included ⚡
 
 - Click on any element
 - Add cookie
@@ -43,16 +45,16 @@ Whether you are a scraping-hero or just want to monitor the price for that produ
 - Press keyboard buttons (e.g. Enter, CTRL+C, etc.)
 - Scroll to bottom of the page
 - Wait a certain amount of time
-- Select any option from a <select> element
+- Select any option from a `<select>` element
 - _(to be continued...)_
 
-### Strategies included
+### Strategies included 🧙🏼
 
 - Scrape text element: retrieve the text within any element
 - Screenshot to map: returns a screenshot of the page with a json with the coordinates and xpath/css selector for elements of your choice
 - _(to be continued...)_
 
-## Installation
+## Installation 🔧
 
 Install ScrapeBlocks with npm
 
@@ -60,7 +62,7 @@ Install ScrapeBlocks with npm
   npm install scrapeblocks
 ```
 
-## Usage
+## Usage 🧑🏼‍💻
 
 ### Using built-in Playwright
 
@@ -118,6 +120,21 @@ Example:
 const actions = [scrollAction, clickAction, typeAction];
 ```
 
-## License
+## TODO ✅
+
+- Implement more strategies
+
+- Implement more actions
+
+- Increase test cases
+
+- Write more extensive documentation
+
+## Contributing 🤝🏼
+
+Feel free to fork this repo and create a PR. I will review them and merge if ok.
+The above todos can be a very good place to start.
+
+## License 📝
 
 [MIT](https://choosealicense.com/licenses/mit/)
