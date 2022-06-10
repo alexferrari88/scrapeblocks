@@ -1,7 +1,7 @@
 {
   "name": "scrapeblocks",
   "version": "0.0.1",
-  "description": "Write scraping strategies and let Playwright do the rest",
+  "description": "Scraping automation framework based on Playwright",
   "main": "./dist/index.js",
   "scripts": {
     "test": "jest",
