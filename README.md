@@ -69,12 +69,12 @@ Install ScrapeBlocks with npm
 #### Basic textContent strategy
 
 ```javascript
-import { Scraper, TextContentScraping } from "scrapeblocks";
+import { Scraper, ScrapingStragegies } from "scrapeblocks";
 
 const URL = "https://webscraper.io/test-sites/e-commerce/allinone";
 const selector = "h4.price";
 
-const strategy = new TextContentScraping(selector);
+const strategy = new ScrapingStragegies.TextContentScraping(selector);
 const result = await new Scraper(URL, strategy).run();
 
 console.log(result);
@@ -89,14 +89,14 @@ Output:
 #### With actions
 
 ```javascript
-import { Scraper, TextContentScraping, Select } from "scrapeblocks";
+import { Scraper, ScrapingStragegies, Select } from "scrapeblocks";
 
 const URL = "https://webscraper.io/test-sites/e-commerce/more/product/488";
 const selectElement = "div.dropdown > select";
 const optionToSelect = "Gold";
 const selector = "div.caption > h4:nth-child(2)";
 
-const strategy = new TextContentScraping(selector);
+const strategy = new ScrapingStragegies.TextContentScraping(selector);
 const selectAction = new Select({
   element: selectElement,
   value: optionToSelect,

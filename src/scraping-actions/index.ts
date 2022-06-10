@@ -1,9 +1,7 @@
-﻿import { AddCookies } from "./AddCookies";
-import { Click } from "./Click";
-import { Press } from "./Press";
-import { Scroll } from "./Scroll";
-import { Select } from "./Select";
-import { Type } from "./Type";
-import { Wait } from "./Wait";
-
-export { AddCookies, Click, Press, Type, Scroll, Select, Wait };
+﻿export { AddCookies } from "./AddCookies";
+export { Click } from "./Click";
+export { Press } from "./Press";
+export { Scroll } from "./Scroll";
+export { Select } from "./Select";
+export { Type } from "./Type";
+export { Wait } from "./Wait";

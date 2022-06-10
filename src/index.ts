@@ -2,7 +2,7 @@
 import { Action, ScrapingStrategy } from "./types";
 import { USER_AGENTS } from "./utils/browser-config";
 
-export class Scraper<T> {
+class Scraper<T> {
   browser: Browser | undefined;
   context: BrowserContext | undefined;
   page: Page | undefined;
@@ -68,3 +68,7 @@ export class Scraper<T> {
     return result;
   }
 }
+
+export * as ScrapingAction from "./scraping-actions";
+export * as ScrapingStrategies from "./scraping-strategies";
+export { Scraper };
