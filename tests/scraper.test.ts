@@ -1,4 +1,4 @@
-﻿import { chromium } from "playwright";
+﻿import { Browser, BrowserContext, chromium, Page } from "playwright";
 import { Scraper } from "../src/index";
 import {
   Click,
@@ -9,7 +9,48 @@ import {
   Wait,
 } from "../src/scraping-actions";
 import { TextContentScraping } from "../src/scraping-strategies/TextContentScraping";
+import { PlaywrightBlocks } from "../src/types";
 const path = require("path");
+
+expect.extend({
+  toBeBrowser(received: Browser) {
+    const pass = "newContext" in received;
+    return {
+      pass,
+      message: () =>
+        `expected ${received} ${pass ? "" : "not"} to be a browser`,
+    };
+  },
+  toBeBrowserContext(received: BrowserContext) {
+    const pass = "newPage" in received;
+    return {
+      pass,
+      message: () =>
+        `expected ${received} ${pass ? "" : "not"} to be a browser context`,
+    };
+  },
+  toBePage(received: Page) {
+    const pass = "goto" in received;
+    return {
+      pass,
+      message: () => `expected ${received} ${pass ? "" : "not"} to be a page`,
+    };
+  },
+});
+
+interface CustomMatchers<R = unknown> {
+  toBeBrowser(): R;
+  toBeBrowserContext(): R;
+  toBePage(): R;
+}
+
+declare global {
+  namespace jest {
+    interface Expect extends CustomMatchers {}
+    interface Matchers<R> extends CustomMatchers<R> {}
+    interface InverseAsymmetricMatchers extends CustomMatchers {}
+  }
+}
 
 describe("Scraper", () => {
   describe("Batteries-included", () => {
@@ -154,6 +195,23 @@ describe("Scraper", () => {
             new TextContentScraping(selector),
             [scrollAction]
           ).run();
+          expect(result).toStrictEqual([expectedText]);
+        });
+
+        test("should execute actions without a strategy", async () => {
+          const element = "#btn-revealer";
+          const selector = "#secret";
+          const clickAction = new Click({ element });
+          const [browser, context, page] = await new Scraper<PlaywrightBlocks>(
+            URL,
+            undefined,
+            [clickAction]
+          ).run();
+          const result = await page.locator(selector).allTextContents();
+          await browser.close();
+          expect(browser).toBeBrowser();
+          expect(context).toBeBrowserContext();
+          expect(page).toBePage();
           expect(result).toStrictEqual([expectedText]);
         });
 
