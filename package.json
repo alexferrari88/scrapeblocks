@@ -1,6 +1,6 @@
 {
   "name": "scrapeblocks",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Scraping automation framework based on Playwright",
   "main": "./dist/index.js",
   "scripts": {
@@ -30,6 +30,9 @@
     "typescript": "^4.7.3"
   },
   "dependencies": {
-    "playwright": "^1.22.2"
+    "buffer-image-size": "^0.6.4",
+    "image-size": "^1.0.1",
+    "playwright": "^1.22.2",
+    "playwright-dompath": "^0.0.6"
   }
 }
