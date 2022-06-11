@@ -4,6 +4,7 @@
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 [![Version](https://img.shields.io/github/package-json/v/alexferrari88/scrapeblocks?style=flat-square)](https://img.shields.io/github/package-json/v/alexferrari88/scrapeblocks?style=flat-square)
+[![NPM Version](https://img.shields.io/npm/v/scrapeblocks?style=flat-square)](https://www.npmjs.com/package/scrapeblocks)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/alexferrari88/scrapeblocks?style=flat-square)](https://img.shields.io/github/last-commit/alexferrari88/scrapeblocks?style=flat-square)
 
 </div>
@@ -39,19 +40,19 @@ Whether you are a scraping-hero or just want to monitor the price for that produ
 
 ### Actions included ⚡
 
-- Click on any element
-- Add cookie
-- Type anywhere you can type something
-- Press keyboard buttons (e.g. Enter, CTRL+C, etc.)
-- Scroll to bottom of the page
-- Wait a certain amount of time
-- Select any option from a `<select>` element
+- [Click on any element](src/scraping-actions/Click.ts)
+- [Add cookie](src/scraping-actions/AddCookies.ts)
+- [Type anywhere you can type something](src/scraping-actions/Type.ts)
+- [Press keyboard buttons (e.g. Enter, CTRL+C, etc.)](src/scraping-actions/Press.ts)
+- [Scroll to bottom of the page](src/scraping-actions/Scroll.ts)
+- [Wait a certain amount of time](src/scraping-actions/Wait.ts)
+- [Select](src/scraping-actions/Select.ts) any option from a `<select>` element
 - _(to be continued...)_
 
 ### Strategies included 🧙🏼
 
-- Scrape text element: retrieve the text within any element
-- Screenshot to map: returns a screenshot of the page with a json with the coordinates and xpath/css selector for elements of your choice
+- [Scrape text element](src/scraping-strategies/TextContentScraping.ts): retrieve the text within any element
+- [Screenshot to map](src/scraping-strategies/ScreenshotToMap.ts): returns a screenshot of the page with a json with the coordinates and xpath/css selector for elements of your choice
 - _(to be continued...)_
 
 ## Installation 🔧
@@ -98,8 +99,8 @@ const selector = "div.caption > h4:nth-child(2)";
 
 const strategy = new ScrapingStragegies.TextContentScraping(selector);
 const selectAction = new Select({
-  element: selectElement,
-  value: optionToSelect,
+	element: selectElement,
+	value: optionToSelect,
 });
 const result = await new Scraper(URL, strategy, [selectAction]).run();
 
@@ -118,6 +119,20 @@ Example:
 
 ```javascript
 const actions = [scrollAction, clickAction, typeAction];
+```
+
+Starting from version 0.1.0, you can also just execute actions without providing any strategy.
+
+The method will return instances of Playwright Browser, BrowserContext, Page.
+
+Example:
+
+<!-- prettier-ignore -->
+```javascript
+const { browser, context, page } =
+        await new Scraper<PlaywrightBlocks>(
+          URL, undefined, [clickAction,]
+          ).run();
 ```
 
 ## TODO ✅
