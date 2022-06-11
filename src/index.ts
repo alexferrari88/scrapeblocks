@@ -2,7 +2,7 @@
 import { Action, PlaywrightBlocks, ScrapingStrategy } from "./types";
 import { USER_AGENTS } from "./utils/browser-config";
 
-class Scraper<T> {
+class Scraper<T = PlaywrightBlocks> {
   browser: Browser | undefined;
   context: BrowserContext | undefined;
   page: Page | undefined;
@@ -31,7 +31,7 @@ class Scraper<T> {
     return this;
   }
 
-  async run(): Promise<T | PlaywrightBlocks> {
+  async run(): Promise<T> {
     if (!this.browser && !this.context && !this.page)
       this.browser = await chromium.launch();
     if (!this.context && !this.page)
@@ -57,16 +57,17 @@ class Scraper<T> {
         }
       }
     }
-    // When not passing a strategy, make sure to
-    // instanciate the Scraper like this:
-    // new Scraper<PlaywrightBlocks>
-    if (!this?.strategy)
-      return [
-        this.browser as Browser,
-        this.context as BrowserContext,
-        this.page as Page,
-      ];
-    let result: T;
+    // No strategy provided, just execute the
+    // actions and return the PlaywrightBlocks
+    if (!this?.strategy) {
+      return {
+        browser: this.browser as Browser,
+        context: this.context as BrowserContext,
+        page: this.page,
+      } as unknown as T;
+    }
+
+    let result;
     try {
       result = await this.strategy.execute(this.page);
     } catch (error) {

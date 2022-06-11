@@ -202,11 +202,10 @@ describe("Scraper", () => {
           const element = "#btn-revealer";
           const selector = "#secret";
           const clickAction = new Click({ element });
-          const [browser, context, page] = await new Scraper<PlaywrightBlocks>(
-            URL,
-            undefined,
-            [clickAction]
-          ).run();
+          const { browser, context, page } =
+            await new Scraper<PlaywrightBlocks>(URL, undefined, [
+              clickAction,
+            ]).run();
           const result = await page.locator(selector).allTextContents();
           await browser.close();
           expect(browser).toBeBrowser();

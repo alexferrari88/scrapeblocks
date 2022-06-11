@@ -27,4 +27,8 @@ export interface Action {
   execute(page: Page, context?: BrowserContext): void;
 }
 
-export type PlaywrightBlocks = [Browser, BrowserContext, Page];
+export type PlaywrightBlocks = {
+  browser: Browser;
+  context: BrowserContext;
+  page: Page;
+};
