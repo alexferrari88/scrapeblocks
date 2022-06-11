@@ -1,4 +1,4 @@
-﻿import { BrowserContext, Page } from "playwright";
+﻿import { Browser, BrowserContext, Page } from "playwright";
 
 export interface Command {
   execute(): void;
@@ -26,3 +26,5 @@ export interface Action {
   options: ActionOptions;
   execute(page: Page, context?: BrowserContext): void;
 }
+
+export type PlaywrightBlocks = [Browser, BrowserContext, Page];
