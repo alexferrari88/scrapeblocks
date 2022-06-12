@@ -3,8 +3,8 @@
 <div align="center">
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
-[![Version](https://img.shields.io/github/package-json/v/alexferrari88/scrapeblocks?style=flat-square)](https://img.shields.io/github/package-json/v/alexferrari88/scrapeblocks?style=flat-square)
 [![NPM Version](https://img.shields.io/npm/v/scrapeblocks?style=flat-square)](https://www.npmjs.com/package/scrapeblocks)
+[![lgtm Code Quality](https://img.shields.io/lgtm/grade/javascript/github/alexferrari88/scrapeblocks?style=flat-square)](https://lgtm.com/projects/g/alexferrari88/scrapeblocks/)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/alexferrari88/scrapeblocks?style=flat-square)](https://img.shields.io/github/last-commit/alexferrari88/scrapeblocks?style=flat-square)
 
 </div>
