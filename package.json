@@ -1,6 +1,6 @@
 {
   "name": "scrapeblocks",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Scraping automation framework based on Playwright",
   "main": "./dist/index.js",
   "scripts": {

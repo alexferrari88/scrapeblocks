@@ -42,6 +42,7 @@ Whether you are a scraping-hero or just want to monitor the price for that produ
 
 - [Click on any element](src/scraping-actions/Click.ts)
 - [Add cookie](src/scraping-actions/AddCookies.ts)
+- [Remove an element](src/scraping-actions/Remove.ts)
 - [Type anywhere you can type something](src/scraping-actions/Type.ts)
 - [Press keyboard buttons (e.g. Enter, CTRL+C, etc.)](src/scraping-actions/Press.ts)
 - [Scroll to bottom of the page](src/scraping-actions/Scroll.ts)
