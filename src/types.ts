@@ -1,34 +1,51 @@
 ﻿import { Browser, BrowserContext, Page } from "playwright";
 
 export interface Command {
-  execute(): void;
+	execute(): void;
 }
 
 export interface ScrapingStrategy<T> {
-  execute(page: Page): T;
+	execute(page: Page): T;
 }
 
-export type ActionType =
-  | "click"
-  | "type"
-  | "scroll"
-  | "select"
-  | "wait"
-  | "cookie";
+export type ActionType = "click" | "type" | "scroll" | "select" | "wait" | "cookie";
 
 export type ActionOptions = {
-  element?: string | undefined;
-  value?: string | undefined;
-  cookies?: Parameters<BrowserContext["addCookies"]>[0] | undefined;
+	element?: string | undefined;
+	value?: string | undefined;
+	cookies?: Parameters<BrowserContext["addCookies"]>[0] | undefined;
 };
 
 export interface Action {
-  options: ActionOptions;
-  execute(page: Page, context?: BrowserContext): void;
+	options: ActionOptions;
+	execute(page: Page, context?: BrowserContext): void;
 }
 
+export type hookPointType =
+	| "start"
+	| "beforeBrowserLaunch"
+	| "afterBrowserLaunch"
+	| "beforeNewContext"
+	| "afterNewContext"
+	| "beforeNewPage"
+	| "afterNewPage"
+	| "beforeGoTo"
+	| "afterGoTo"
+	| "beforeActions"
+	| "afterActions"
+	| "beforeStrategyExecution"
+	| "afterStrategyExecution"
+	| "beforeBrowserClose"
+	| "afterBrowserClose"
+	| "end";
+
+export type Hook = {
+	hookPoint: hookPointType;
+	execute(page?: Page, context?: BrowserContext): void;
+};
+
 export type PlaywrightBlocks = {
-  browser: Browser;
-  context: BrowserContext;
-  page: Page;
+	browser: Browser;
+	context: BrowserContext;
+	page: Page;
 };
