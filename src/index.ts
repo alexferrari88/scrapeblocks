@@ -2,25 +2,36 @@
 import { Action, Hook, hookPointType, ScrapingStrategy } from "./types";
 import { USER_AGENTS } from "./utils/browser-config";
 
+type StrategiesType<R> =
+	| [...ScrapingStrategy<unknown>[], ScrapingStrategy<R>]
+	| ScrapingStrategy<R>[];
+
 class Scraper<R> {
 	browser: Browser | undefined;
 	context: BrowserContext | undefined;
 	page: Page | undefined;
 	url: string;
-	strategies?: [...ScrapingStrategy<unknown>[], ScrapingStrategy<R>] | ScrapingStrategy<R>[];
+	strategies?: StrategiesType<R>;
 	actions: Action[] | undefined;
 	hooks: Hook[] | undefined;
 
-	constructor(
-		url: string,
-		strategies?: [...ScrapingStrategy<unknown>[], ScrapingStrategy<R>] | ScrapingStrategy<R>[],
-		actions?: Action[],
-		hooks?: Hook[]
-	) {
+	constructor(url: string, strategies?: StrategiesType<R>, actions?: Action[], hooks?: Hook[]) {
 		this.url = url;
 		this.actions = actions;
 		this.strategies = strategies;
 		this.hooks = hooks;
+		if (this.strategies) this.registerStrategiesHooks(this.strategies);
+	}
+
+	registerStrategiesHooks(strategies: StrategiesType<R>) {
+		for (const strategy of strategies) {
+			if (strategy.hooks) {
+				for (const hook of strategy.hooks) {
+					if (!this.hooks) this.hooks = [];
+					this.hooks.push(hook);
+				}
+			}
+		}
 	}
 
 	withBrowser(browser: Browser): Scraper<R> {
@@ -40,11 +51,11 @@ class Scraper<R> {
 
 	async #runHooks(hookPoint: hookPointType, page?: Page, context?: BrowserContext): Promise<void> {
 		if (!this.hooks) return;
-		this.hooks.forEach(async (hook) => {
+		for (const hook of this.hooks) {
 			if (hook.hookPoint === hookPoint) {
 				await hook.execute(page, context);
 			}
-		});
+		}
 	}
 
 	async #cleanup(): Promise<void> {

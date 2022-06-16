@@ -15,10 +15,10 @@ export abstract class BaseStrategy {
 		context?: BrowserContext
 	): Promise<void> {
 		if (!hooks) return;
-		hooks.forEach(async (hook) => {
+		for (const hook of hooks) {
 			if (hook.hookPoint === hookPoint) {
 				await hook.execute(page, context);
 			}
-		});
+		}
 	}
 }

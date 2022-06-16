@@ -17,9 +17,9 @@ export class Remove implements Action {
 
 	async execute(page: Page, _context?: BrowserContext): Promise<void> {
 		await page.$$eval(this.options.element, (elements) => {
-			elements.forEach((element) => {
+			for (const element of elements) {
 				element.remove();
-			});
+			}
 		});
 		await delay(100);
 	}
