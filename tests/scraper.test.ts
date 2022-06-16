@@ -54,32 +54,32 @@ describe("Scraper", () => {
 			const expectedNumberOfLiElement = 18;
 
 			it("should return the text value from a css selector with text", async () => {
-				const result = await new Scraper(URL, new TextContentScraping(CSS_SELECTOR)).run();
+				const result = await new Scraper(URL, [new TextContentScraping(CSS_SELECTOR)]).run();
 				expect(result).toStrictEqual([expectedValue]);
 			});
 
 			it("should return the text value from an xpath selector with text", async () => {
-				const result = await new Scraper(URL, new TextContentScraping(XPATH_SELECTOR)).run();
+				const result = await new Scraper(URL, [new TextContentScraping(XPATH_SELECTOR)]).run();
 				expect(result).toStrictEqual([expectedValue]);
 			});
 
 			it("should return an empty string from a selector without text", async () => {
-				const result = await new Scraper(URL, new TextContentScraping(".slider")).run();
+				const result = await new Scraper(URL, [new TextContentScraping(".slider")]).run();
 				expect(result).toStrictEqual([""]);
 			});
 
 			it("should return an list of strings from a selector with multiple text", async () => {
-				const result = await new Scraper(URL, new TextContentScraping("li")).run();
+				const result = await new Scraper(URL, [new TextContentScraping("li")]).run();
 				expect(result).toHaveLength(expectedNumberOfLiElement);
 			});
 
 			it("should return an empty array for non existing selector", async () => {
-				const result = await new Scraper(URL, new TextContentScraping("asdeqda")).run();
+				const result = await new Scraper(URL, [new TextContentScraping("asdeqda")]).run();
 				expect(result).toStrictEqual([]);
 			});
 
 			it("should return an empty array for non existing xpath selector", async () => {
-				const result = await new Scraper(URL, new TextContentScraping("xpath=asdasdasd")).run();
+				const result = await new Scraper(URL, [new TextContentScraping("xpath=asdasdasd")]).run();
 				expect(result).toStrictEqual([]);
 			});
 		});
@@ -92,9 +92,11 @@ describe("Scraper", () => {
 					const element = "#btn-revealer";
 					const selector = "#secret";
 					const clickAction = new Click({ element });
-					const result = await new Scraper(URL, new TextContentScraping(selector), [
-						clickAction,
-					]).run();
+					const result = await new Scraper(
+						URL,
+						[new TextContentScraping(selector)],
+						[clickAction]
+					).run();
 					expect(result).toStrictEqual([expectedText]);
 				});
 
@@ -103,9 +105,11 @@ describe("Scraper", () => {
 					const value = "secret";
 					const selector = "#you-typed";
 					const typeAction = new Type({ element, value });
-					const result = await new Scraper(URL, new TextContentScraping(selector), [
-						typeAction,
-					]).run();
+					const result = await new Scraper(
+						URL,
+						[new TextContentScraping(selector)],
+						[typeAction]
+					).run();
 					expect(result).toStrictEqual([value]);
 				});
 
@@ -114,12 +118,14 @@ describe("Scraper", () => {
 					const value = "3000";
 					const selector = "#hint";
 					const expectedHintText = "terces";
-					const noWaitResult = await new Scraper(URL, new TextContentScraping(selector)).run();
+					const noWaitResult = await new Scraper(URL, [new TextContentScraping(selector)]).run();
 					expect(noWaitResult).toStrictEqual([]);
 					const typeAction = new Wait({ value });
-					const result = await new Scraper(URL, new TextContentScraping(selector), [
-						typeAction,
-					]).run();
+					const result = await new Scraper(
+						URL,
+						[new TextContentScraping(selector)],
+						[typeAction]
+					).run();
 					expect(result).toStrictEqual([expectedHintText]);
 				});
 
@@ -128,9 +134,11 @@ describe("Scraper", () => {
 					const value = "yes";
 					const selector = "#secret";
 					const typeAction = new Select({ element, value });
-					const result = await new Scraper(URL, new TextContentScraping(selector), [
-						typeAction,
-					]).run();
+					const result = await new Scraper(
+						URL,
+						[new TextContentScraping(selector)],
+						[typeAction]
+					).run();
 					expect(result).toStrictEqual([expectedText]);
 				});
 
@@ -140,41 +148,48 @@ describe("Scraper", () => {
 					const selector = "#secret";
 					const typeAction = new Type({ element, value });
 					const pressAction = new Press({ element, value: "Enter" });
-					const result = await new Scraper(URL, new TextContentScraping(selector), [
-						typeAction,
-						pressAction,
-					]).run();
+					const result = await new Scraper(
+						URL,
+						[new TextContentScraping(selector)],
+						[typeAction, pressAction]
+					).run();
 					expect(result).toStrictEqual([expectedText]);
 				});
 
 				test("should scroll", async () => {
 					const selector = "#secret";
 					const scrollAction = new Scroll({});
-					const result = await new Scraper(URL, new TextContentScraping(selector), [
-						scrollAction,
-					]).run();
+					const result = await new Scraper(
+						URL,
+						[new TextContentScraping(selector)],
+						[scrollAction]
+					).run();
 					expect(result).toStrictEqual([expectedText]);
 				});
 
 				test("should remove 1 element", async () => {
 					const element = "label[for=select-revealer]";
-					const beforeResult = await new Scraper(URL, new TextContentScraping(element)).run();
+					const beforeResult = await new Scraper(URL, [new TextContentScraping(element)]).run();
 					expect(beforeResult).toHaveLength(1);
 					const removeAction = new Remove({ element });
-					const result = await new Scraper(URL, new TextContentScraping(element), [
-						removeAction,
-					]).run();
+					const result = await new Scraper(
+						URL,
+						[new TextContentScraping(element)],
+						[removeAction]
+					).run();
 					expect(result).toHaveLength(0);
 				});
 
 				test("should remove 2 elements", async () => {
 					const element = "button";
-					const beforeResult = await new Scraper(URL, new TextContentScraping(element)).run();
+					const beforeResult = await new Scraper(URL, [new TextContentScraping(element)]).run();
 					expect(beforeResult).toHaveLength(2);
 					const removeAction = new Remove({ element });
-					const result = await new Scraper(URL, new TextContentScraping(element), [
-						removeAction,
-					]).run();
+					const result = await new Scraper(
+						URL,
+						[new TextContentScraping(element)],
+						[removeAction]
+					).run();
 					expect(result).toHaveLength(0);
 				});
 
@@ -205,7 +220,7 @@ describe("Scraper", () => {
 				//   const cookieAction = new AddCookies({ cookies: [cookies] });
 				//   const result = await new Scraper(
 				//     URL,
-				//     new TextContentScraping(selector),
+				//     [new TextContentScraping(selector)],
 				//     [cookieAction]
 				//   ).run();
 				//   expect(result).toStrictEqual([expectedText]);
@@ -224,7 +239,7 @@ describe("Scraper", () => {
 			test("should be able to pass an existing browser instance", async () => {
 				const browser = await chromium.launch();
 				const spy = jest.spyOn(browser, "newContext");
-				const result = await new Scraper(URL, new TextContentScraping(CSS_SELECTOR))
+				const result = await new Scraper(URL, [new TextContentScraping(CSS_SELECTOR)])
 					.withBrowser(browser)
 					.run();
 				await browser.close();
@@ -239,7 +254,7 @@ describe("Scraper", () => {
 				const browser = await chromium.launch();
 				const context = await browser.newContext();
 				const spy = jest.spyOn(context, "newPage");
-				const result = await new Scraper(URL, new TextContentScraping(CSS_SELECTOR))
+				const result = await new Scraper(URL, [new TextContentScraping(CSS_SELECTOR)])
 					.withContext(context)
 					.run();
 				await browser.close();
@@ -255,7 +270,7 @@ describe("Scraper", () => {
 				const context = await browser.newContext();
 				const page = await context.newPage();
 				const spy = jest.spyOn(page, "goto");
-				const result = await new Scraper(URL, new TextContentScraping(CSS_SELECTOR))
+				const result = await new Scraper(URL, [new TextContentScraping(CSS_SELECTOR)])
 					.withPage(page)
 					.run();
 				await browser.close();

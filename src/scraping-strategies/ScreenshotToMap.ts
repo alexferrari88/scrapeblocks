@@ -8,6 +8,7 @@ import { ElementHandle, Page } from "playwright";
 import { cssPath, xPath as getXPath } from "playwright-dompath";
 import { ScrapingStrategy } from "../types";
 import { getRandomFileName } from "../utils/utils";
+import { BaseStrategy } from "./BaseStrategy";
 const sizeOf = require("image-size");
 const sizeOfBuffer = require("buffer-image-size");
 
@@ -26,6 +27,7 @@ export type ImageSizeType = {
 };
 
 export class ScreenshotToMapStrategy
+	extends BaseStrategy
 	implements ScrapingStrategy<Promise<[Buffer | string, ImageSizeType, ScreenshotMap[]]>>
 {
 	selectors: string[];
@@ -35,11 +37,12 @@ export class ScreenshotToMapStrategy
 	filePath?: string;
 
 	constructor(selectors: string[], includeCSSSelectors?: boolean) {
+		super();
 		this.selectors = selectors;
 		this.includeCSSSelectors = includeCSSSelectors || false;
 	}
 
-	asFile(filePath: string, fileName?: string): this {
+	asFile(filePath: string, fileName?: string): ScreenshotToMapStrategy {
 		this.fileName = fileName || `${getRandomFileName()}.png`;
 		this.filePath = filePath || "./";
 		return this;
@@ -50,6 +53,7 @@ export class ScreenshotToMapStrategy
 	}
 
 	async execute(page: Page): Promise<[Buffer | string, ImageSizeType, ScreenshotMap[]]> {
+		if (this.hooks) await this.runHooks(this.hooks, "beforeInStrategy", page);
 		let imgResult: Buffer | string;
 		let imgSize: ImageSizeType | undefined;
 		if (this.fileName) {
@@ -79,6 +83,7 @@ export class ScreenshotToMapStrategy
 				toReturn.push({ ...boundingBox, cssSelector, xPath, zIndex });
 			}
 		}
+		if (this.hooks) await this.runHooks(this.hooks, "afterInStrategy", page);
 		return [imgResult, imgSize, toReturn];
 	}
 }

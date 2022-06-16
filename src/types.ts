@@ -1,11 +1,15 @@
 ﻿import { Browser, BrowserContext, Page } from "playwright";
 
+export type Last<T extends readonly any[]> = T extends readonly [...any[], infer R] ? R : never;
+
 export interface Command {
 	execute(): void;
 }
 
-export interface ScrapingStrategy<T> {
-	execute(page: Page): T;
+export interface ScrapingStrategy<R = Promise<void>> {
+	actions: Action[] | undefined;
+	hooks: Hook[] | undefined;
+	execute(page: Page, input?: unknown): R;
 }
 
 export type ActionType = "click" | "type" | "scroll" | "select" | "wait" | "cookie";
@@ -34,6 +38,8 @@ export type hookPointType =
 	| "beforeActions"
 	| "afterActions"
 	| "beforeStrategyExecution"
+	| "beforeInStrategy"
+	| "afterInStrategy"
 	| "afterStrategyExecution"
 	| "beforeBrowserClose"
 	| "afterBrowserClose"

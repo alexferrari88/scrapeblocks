@@ -1,34 +1,39 @@
 ﻿import { Browser, BrowserContext, chromium, Page } from "playwright";
-import { Action, Hook, hookPointType, PlaywrightBlocks, ScrapingStrategy } from "./types";
+import { Action, Hook, hookPointType, ScrapingStrategy } from "./types";
 import { USER_AGENTS } from "./utils/browser-config";
 
-class Scraper<T = PlaywrightBlocks> {
+class Scraper<R> {
 	browser: Browser | undefined;
 	context: BrowserContext | undefined;
 	page: Page | undefined;
 	url: string;
-	strategy?: ScrapingStrategy<T>;
+	strategies?: [...ScrapingStrategy<unknown>[], ScrapingStrategy<R>] | ScrapingStrategy<R>[];
 	actions: Action[] | undefined;
 	hooks: Hook[] | undefined;
 
-	constructor(url: string, strategy?: ScrapingStrategy<T>, actions?: Action[], hooks?: Hook[]) {
+	constructor(
+		url: string,
+		strategies?: [...ScrapingStrategy<unknown>[], ScrapingStrategy<R>] | ScrapingStrategy<R>[],
+		actions?: Action[],
+		hooks?: Hook[]
+	) {
 		this.url = url;
-		this.strategy = strategy;
 		this.actions = actions;
+		this.strategies = strategies;
 		this.hooks = hooks;
 	}
 
-	withBrowser(browser: Browser): Scraper<T> {
+	withBrowser(browser: Browser): Scraper<R> {
 		this.browser = browser;
 		return this;
 	}
 
-	withContext(context: BrowserContext): Scraper<T> {
+	withContext(context: BrowserContext): Scraper<R> {
 		this.context = context;
 		return this;
 	}
 
-	withPage(page: Page): Scraper<T> {
+	withPage(page: Page): Scraper<R> {
 		this.page = page;
 		return this;
 	}
@@ -41,6 +46,7 @@ class Scraper<T = PlaywrightBlocks> {
 			}
 		});
 	}
+
 	async #cleanup(): Promise<void> {
 		if (this.browser) {
 			await this.#runHooks("beforeBrowserClose", this.page, this.context);
@@ -49,7 +55,7 @@ class Scraper<T = PlaywrightBlocks> {
 		}
 	}
 
-	async run(): Promise<T> {
+	async run(): Promise<R> {
 		await this.#runHooks("start", this.page, this.context);
 		if (!this.browser && !this.context && !this.page) {
 			await this.#runHooks("beforeBrowserLaunch", this.page, this.context);
@@ -89,27 +95,29 @@ class Scraper<T = PlaywrightBlocks> {
 		}
 		// No strategy provided, just execute the
 		// actions and return the PlaywrightBlocks
-		if (!this?.strategy) {
+		if (!this?.strategies) {
 			await this.#runHooks("end", this.page, this.context);
 			return {
 				browser: this.browser as Browser,
 				context: this.context as BrowserContext,
 				page: this.page,
-			} as unknown as T;
+			} as unknown as R;
 		}
 
 		let result;
-		try {
-			await this.#runHooks("beforeStrategyExecution", this.page, this.context);
-			result = await this.strategy.execute(this.page);
-			await this.#runHooks("afterStrategyExecution", this.page, this.context);
-		} catch (error) {
-			await this.#cleanup();
-			throw error;
+		for (const strategy of this.strategies) {
+			try {
+				await this.#runHooks("beforeStrategyExecution", this.page, this.context);
+				result = await strategy.execute(this.page, result);
+				await this.#runHooks("afterStrategyExecution", this.page, this.context);
+			} catch (error) {
+				await this.#cleanup();
+				throw error;
+			}
 		}
 		this.#cleanup();
 		await this.#runHooks("end", this.page, this.context);
-		return result;
+		return result as R;
 	}
 }
 

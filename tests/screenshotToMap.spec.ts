@@ -54,7 +54,7 @@ describe("ScreenshotToMap Basics", () => {
 		const context = await browser.newContext();
 		const page = await context.newPage();
 		const spy = jest.spyOn(page, "screenshot");
-		const _ = await new Scraper(URL, new ScreenshotToMap(selector)).withPage(page).run();
+		const _ = await new Scraper(URL, [new ScreenshotToMap(selector)]).withPage(page).run();
 		await browser.close();
 		expect(spy).toHaveBeenCalled();
 		spy.mockRestore();
@@ -64,10 +64,9 @@ describe("ScreenshotToMap Basics", () => {
 		const URL = `file://${path.resolve("tests/templates/pricing.html")}`;
 		const selector = ["div", "p", "a", "table", "img"];
 		const numElements = 27;
-		const [fileBuffer, imgSize, screenshotMap] = await new Scraper(
-			URL,
-			new ScreenshotToMap(selector)
-		).run();
+		const [fileBuffer, imgSize, screenshotMap] = await new Scraper(URL, [
+			new ScreenshotToMap(selector),
+		]).run();
 		expect(typeof fileBuffer).toBe("object");
 		expect(imgSize).toHaveSizes(imgWidth, imgHeight);
 		expect(imgSize.type).toStrictEqual("png");
@@ -80,10 +79,9 @@ describe("ScreenshotToMap Basics", () => {
 	test("should take a screenshot and save it as file", async () => {
 		const URL = `file://${path.resolve("tests/templates/pricing.html")}`;
 		const selector = ["div", "p", "a", "table", "img"];
-		const [file, imgSize, screenshotMap] = await new Scraper(
-			URL,
-			new ScreenshotToMap(selector).asFile(screenshotsFolder)
-		).run();
+		const [file, imgSize, screenshotMap] = await new Scraper(URL, [
+			new ScreenshotToMap(selector).asFile(screenshotsFolder),
+		]).run();
 		const fileExists = fs.existsSync(file);
 		expect(fileExists).toBeTruthy();
 		expect(typeof file).toStrictEqual("string");
