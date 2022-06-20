@@ -1,12 +1,14 @@
-﻿import { BrowserContext, Page } from "playwright";
+﻿import { EventEmitter } from "events";
+import { BrowserContext, Page } from "playwright";
 import { Action, Hook, hookPointType } from "../types";
-
 export abstract class BaseStrategy {
 	actions: Action[] | undefined;
 	hooks: Hook[] | undefined;
-	constructor(actions?: Action[], hooks?: Hook[]) {
+	eventsManager: EventEmitter | undefined;
+	constructor(actions?: Action[], hooks?: Hook[], eventsManager?: EventEmitter) {
 		this.actions = actions;
 		this.hooks = hooks;
+		this.eventsManager = eventsManager;
 	}
 	protected async runHooks(
 		hooks: Hook[],

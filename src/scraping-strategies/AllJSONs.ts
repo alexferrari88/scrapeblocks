@@ -1,5 +1,6 @@
 ﻿import { Page } from "playwright";
 import { ScrapingStrategy } from "../types";
+import { BaseStrategy } from "./BaseStrategy";
 
 const parseJSON = (json: string) => {
 	try {
@@ -9,7 +10,7 @@ const parseJSON = (json: string) => {
 	}
 };
 
-export class AllJSONs implements ScrapingStrategy<U> {
+export class AllJSONs extends BaseStrategy implements ScrapingStrategy<U> {
 	withUrls: boolean = false;
 	#result: U[];
 	constructor(withUrls?: boolean) {

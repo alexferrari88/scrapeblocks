@@ -1,7 +1,5 @@
-﻿import { Browser, BrowserContext, Page } from "playwright";
-
-export type Last<T extends readonly any[]> = T extends readonly [...any[], infer R] ? R : never;
-
+﻿import { EventEmitter } from "events";
+import { Browser, BrowserContext, Page } from "playwright";
 export interface Command {
 	execute(): void;
 }
@@ -9,6 +7,7 @@ export interface Command {
 export interface ScrapingStrategy<R = Promise<void>> {
 	actions: Action[] | undefined;
 	hooks: Hook[] | undefined;
+	eventsManager: EventEmitter | undefined;
 	execute(page: Page, input?: unknown): R;
 }
 
@@ -45,9 +44,9 @@ export type hookPointType =
 	| "afterBrowserClose"
 	| "end";
 
-export type Hook = {
+export type Hook<R = void> = {
 	hookPoint: hookPointType;
-	execute(page?: Page, context?: BrowserContext): void;
+	execute(page?: Page, context?: BrowserContext): R;
 };
 
 export type PlaywrightBlocks = {

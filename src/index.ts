@@ -1,6 +1,7 @@
 ﻿import { Browser, BrowserContext, chromium, Page } from "playwright";
 import { Action, Hook, hookPointType, ScrapingStrategy } from "./types";
 import { USER_AGENTS } from "./utils/browser-config";
+const EventEmitter = require("node:events");
 
 type StrategiesType<R> =
 	| [...ScrapingStrategy<unknown>[], ScrapingStrategy<R>]
@@ -14,23 +15,32 @@ class Scraper<R> {
 	strategies?: StrategiesType<R>;
 	actions: Action[] | undefined;
 	hooks: Hook[] | undefined;
+	eventsManager = new EventEmitter();
 
 	constructor(url: string, strategies?: StrategiesType<R>, actions?: Action[], hooks?: Hook[]) {
 		this.url = url;
 		this.actions = actions;
 		this.strategies = strategies;
 		this.hooks = hooks;
-		if (this.strategies) this.registerStrategiesHooks(this.strategies);
+		if (this.strategies) this.registerStrategies(this.strategies);
 	}
 
-	registerStrategiesHooks(strategies: StrategiesType<R>) {
+	registerHooks(hooks: Hook[]) {
+		for (const hook of hooks) {
+			if (!this.hooks) this.hooks = [];
+			this.hooks.push(hook);
+		}
+	}
+
+	registerEventsManagerInStrategy(strategy: ScrapingStrategy<R>) {
+		strategy.eventsManager = this.eventsManager;
+	}
+
+	registerStrategies(strategies: StrategiesType<R>) {
 		for (const strategy of strategies) {
-			if (strategy.hooks) {
-				for (const hook of strategy.hooks) {
-					if (!this.hooks) this.hooks = [];
-					this.hooks.push(hook);
-				}
-			}
+			if (strategy.hooks) this.registerHooks(strategy.hooks);
+			if (!strategy.eventsManager)
+				this.registerEventsManagerInStrategy(strategy as unknown as ScrapingStrategy<R>);
 		}
 	}
 
