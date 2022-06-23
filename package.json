@@ -33,6 +33,7 @@
     "buffer-image-size": "^0.6.4",
     "image-size": "^1.0.1",
     "playwright": "^1.22.2",
-    "playwright-dompath": "^0.0.6"
+    "playwright-dompath": "^0.0.6",
+    "rxjs": "^7.5.5"
   }
 }

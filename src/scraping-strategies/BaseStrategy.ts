@@ -1,14 +1,27 @@
 ﻿import { EventEmitter } from "events";
 import { BrowserContext, Page } from "playwright";
 import { Action, Hook, hookPointType } from "../types";
+
+type BaseStrategyOptions = {
+	preActions?: Action[];
+	postActions?: Action[];
+	hooks?: Hook[];
+	eventsManager?: EventEmitter;
+	nextPageSelector?: string;
+};
 export abstract class BaseStrategy {
-	actions: Action[] | undefined;
-	hooks: Hook[] | undefined;
+	nextPageSelector?: string | ((page: Page) => Promise<void> | void);
+	preActions?: Action[];
+	postActions?: Action[];
+	hooks?: Hook[];
 	eventsManager: EventEmitter | undefined;
-	constructor(actions?: Action[], hooks?: Hook[], eventsManager?: EventEmitter) {
-		this.actions = actions;
-		this.hooks = hooks;
-		this.eventsManager = eventsManager;
+
+	constructor(options: BaseStrategyOptions) {
+		this.eventsManager = options?.eventsManager;
+		this.nextPageSelector = options?.nextPageSelector;
+		this.preActions = options?.preActions;
+		this.postActions = options?.postActions;
+		this.hooks = options?.hooks;
 	}
 	protected async runHooks(
 		hooks: Hook[],
