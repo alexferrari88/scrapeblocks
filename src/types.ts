@@ -1,14 +1,17 @@
-﻿import { EventEmitter } from "events";
-import { Browser, BrowserContext, Page } from "playwright";
+﻿import { Browser, BrowserContext, Page } from "playwright";
 export interface Command {
 	execute(): void;
 }
 
 export interface ScrapingStrategy<R = Promise<void>> {
-	actions: Action[] | undefined;
-	hooks: Hook[] | undefined;
-	eventsManager: EventEmitter | undefined;
-	execute(page: Page, input?: unknown): R;
+	url?: string;
+	selector: string;
+	nextPageSelector?: string | ((page: Page) => Promise<void> | void);
+	preActions?: Action[];
+	postActions?: Action[];
+	hooks?: Hook[];
+	// execute(page: Page, input?: unknown): R;
+	execute(page: Page): AsyncGenerator<R, R | undefined, R>;
 }
 
 export type ActionType = "click" | "type" | "scroll" | "select" | "wait" | "cookie";

@@ -1,24 +1,22 @@
 ﻿import { Page } from "playwright";
-import { Action, Hook } from "../types";
+import { Action, Hook, ScrapingStrategy } from "../types";
 import { BaseStrategy } from "./BaseStrategy";
 
-type TextContentScrapingOptions = {
-	url?: string;
-	selector: string;
-	nextPageSelector?: string | ((page: Page) => Promise<void> | void);
-	preActions?: Action[];
-	postActions?: Action[];
-	hooks?: Hook[];
-};
-
-export class TextContentScraping extends BaseStrategy {
+export class TextContentScraping extends BaseStrategy implements ScrapingStrategy<string[]> {
 	url?: string;
 	selector: string;
 	preActions?: Action[];
 	postActions?: Action[];
 	hooks?: Hook[];
 
-	constructor(options: TextContentScrapingOptions) {
+	constructor(options: {
+		url?: string;
+		selector: string;
+		nextPageSelector?: string | ((page: Page) => Promise<void> | void);
+		preActions?: Action[];
+		postActions?: Action[];
+		hooks?: Hook[];
+	}) {
 		super({
 			preActions: options?.preActions,
 			postActions: options?.postActions,
@@ -28,7 +26,7 @@ export class TextContentScraping extends BaseStrategy {
 		this.selector = options.selector;
 	}
 
-	async *execute(page: Page) {
+	async *execute(page: Page): AsyncGenerator<string[], string[] | undefined, string[]> {
 		if (this.hooks) await this.runHooks(this.hooks, "beforeInStrategy", page);
 		if (this.preActions) {
 			for (const action of this.preActions) {

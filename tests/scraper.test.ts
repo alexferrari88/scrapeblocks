@@ -284,7 +284,7 @@ describe("Scraper", () => {
 		test("should scrape Amazon products and their reviews", () => {
 			const url = "https://amazon.com";
 			const keyword = "bbq";
-			const step1 = new Step();
+			const step1 = new Step<string[]>();
 			step1.setStrategy(
 				new TextContentScraping({
 					url: url,
@@ -301,8 +301,8 @@ describe("Scraper", () => {
 					nextPageSelector: "nextPageSelector",
 				})
 			);
-			const step2 = new Step();
-			step2.setInput(step1);
+			const step2 = new Step<string[]>();
+			step2.setInputs([step1 as Step<string[]>]);
 			step2.setStrategy(
 				new TextContentScraping({
 					selector: "selector",
