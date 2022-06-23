@@ -6,7 +6,10 @@ export class Pipeline<R> {
 		this.steps = steps;
 	}
 
-	async run();
+	async run(): Promise<R> {
+		let result: R;
+		// build a pipeline of steps using rxjs
+	}
 }
 
 export class Step<R> {
@@ -19,5 +22,9 @@ export class Step<R> {
 
 	setInputs(inputs: Step<unknown>[]) {
 		this.inputs = inputs;
+	}
+
+	async run(): Promise<R> {
+		// execute the strategy
 	}
 }
