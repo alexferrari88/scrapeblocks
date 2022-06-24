@@ -1,6 +1,7 @@
 ﻿import { Browser, BrowserContext, Page } from "playwright";
 import { Pipeline, Step } from "../src/Pipeline";
 import { Click, Type } from "../src/scraping-actions";
+import { ListScraping } from "../src/scraping-strategies/ListScraping";
 import { TextContentScraping } from "../src/scraping-strategies/TextContentScraping";
 const path = require("path");
 
@@ -286,9 +287,10 @@ describe("Scraper", () => {
 			const keyword = "bbq";
 			const step1 = new Step<string[]>();
 			step1.setStrategy(
-				new TextContentScraping({
+				new ListScraping({
 					url: url,
-					selector: "selector",
+					groupSelector: ".row",
+					selectors: [".title", ".price"],
 					preActions: [
 						new Type({
 							element: "element",
