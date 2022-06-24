@@ -301,17 +301,26 @@ describe("Scraper", () => {
 					nextPageSelector: "nextPageSelector",
 				})
 			);
-			const step2 = new Step<string[]>();
-			step2.setInputs([step1 as Step<string[]>]);
-			step2.setStrategy(
-				new TextContentScraping({
-					selector: "selector",
-					nextPageSelector: "nextPageSelector",
-				})
-			);
-
-			const p = new Pipeline([step1, step2]);
+			step1.onData((data) => {
+				const step2 = new Step<string[]>();
+				step2.setInputs([step1 as Step<string[]>]);
+				step2.setStrategy(
+					new TextContentScraping({
+						selector: "selector",
+						nextPageSelector: "nextPageSelector",
+					})
+				);
+			});
+			const p = new Pipeline<string[]>([step1, step2]);
 			p.run();
+		});
+		test("no abstractions", () => {
+			const url =
+				"https://www.amazon.com/s?k=rust&i=stripbooks-intl-ship&crid=DWQS7NQZTDOP&sprefix=rust%2Cstripbooks-intl-ship%2C243&ref=nb_sb_noss_1";
+			const browser = await chromium.launch();
+			const context = await browser.newContext();
+			const page = await context.newPage();
+			await page.goto(url);
 		});
 	});
 });

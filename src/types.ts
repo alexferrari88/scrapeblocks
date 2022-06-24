@@ -5,7 +5,7 @@ export interface Command {
 
 export interface ScrapingStrategy<R = Promise<void>> {
 	url?: string;
-	selector: string;
+	selectors: string[];
 	nextPageSelector?: string | ((page: Page) => Promise<void> | void);
 	preActions?: Action[];
 	postActions?: Action[];

@@ -2,12 +2,14 @@
 import { Action, Hook, ScrapingStrategy } from "../types";
 import { BaseStrategy } from "./BaseStrategy";
 
-export class TextContentScraping extends BaseStrategy implements ScrapingStrategy<string[][]> {
+export class ListScraping extends BaseStrategy implements ScrapingStrategy<string[][]> {
 	url?: string;
+	groupSelector: string;
 	selectors: string[];
 
 	constructor(options: {
 		url?: string;
+		groupSelector: string;
 		selectors: string[];
 		nextPageSelector?: string | ((page: Page) => Promise<void> | void);
 		preActions?: Action[];
@@ -20,6 +22,7 @@ export class TextContentScraping extends BaseStrategy implements ScrapingStrateg
 			hooks: options?.hooks,
 		});
 		this.url = options?.url;
+		this.groupSelector = options.groupSelector;
 		this.selectors = options.selectors;
 	}
 
@@ -31,9 +34,16 @@ export class TextContentScraping extends BaseStrategy implements ScrapingStrateg
 			}
 		}
 		let result: string[][] = [];
-		for (const selector of this.selectors) {
-			const text = await page.locator(selector).allTextContents();
-			result.push(text);
+		const groups = await page.locator(this.groupSelector);
+		const nGroups = await groups.count();
+		for (let i = 0; i < nGroups; i++) {
+			const item = groups.nth(i);
+			const itemResult: string[] = [];
+			for (const selector of this.selectors) {
+				const text = await item.locator(selector).allTextContents();
+				itemResult.push(...text);
+			}
+			result.push(itemResult);
 		}
 		if (!this.nextPageSelector) {
 			if (this.hooks) await this.runHooks(this.hooks, "afterInStrategy", page);
