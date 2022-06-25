@@ -10,7 +10,7 @@ export interface ScrapingStrategy<R = Promise<void>> {
 	postActions?: Action[];
 	hooks?: Hook[];
 	// execute(page: Page, input?: unknown): R;
-	execute(page?: Page): AsyncGenerator<R, R | undefined, R>;
+	execute(page?: Page): AsyncIterable<R>;
 }
 
 export type ActionType = "click" | "type" | "scroll" | "select" | "wait" | "cookie";

@@ -47,13 +47,7 @@ export class ListScraping
 		this.itemDescriptor = options.itemDescriptor;
 	}
 
-	async *execute(
-		page?: Page
-	): AsyncGenerator<
-		Record<string, string | string[]>,
-		Record<string, string | string[]> | undefined,
-		Record<string, string | string[]>
-	> {
+	async *execute(page?: Page): AsyncIterable<Record<string, string | string[]>> {
 		if (this.hooks) await this.runHooks(this.hooks, "beforeInStrategy", page);
 		let browser: Browser;
 		let context: BrowserContext;
