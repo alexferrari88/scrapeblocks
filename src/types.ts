@@ -5,13 +5,12 @@ export interface Command {
 
 export interface ScrapingStrategy<R = Promise<void>> {
 	url?: string;
-	selectors: string[];
 	nextPageSelector?: string | ((page: Page) => Promise<void> | void);
 	preActions?: Action[];
 	postActions?: Action[];
 	hooks?: Hook[];
 	// execute(page: Page, input?: unknown): R;
-	execute(page: Page): AsyncGenerator<R, R | undefined, R>;
+	execute(page?: Page): AsyncGenerator<R, R | undefined, R>;
 }
 
 export type ActionType = "click" | "type" | "scroll" | "select" | "wait" | "cookie";

@@ -2,7 +2,6 @@
 import { Pipeline, Step } from "../src/Pipeline";
 import { Click, Type } from "../src/scraping-actions";
 import { ListScraping } from "../src/scraping-strategies/ListScraping";
-import { TextContentScraping } from "../src/scraping-strategies/TextContentScraping";
 const path = require("path");
 
 expect.extend({
@@ -285,12 +284,25 @@ describe("Scraper", () => {
 		test("should scrape Amazon products and their reviews", () => {
 			const url = "https://amazon.com";
 			const keyword = "bbq";
-			const step1 = new Step<string[]>();
+			const step1 = new Step();
 			step1.setStrategy(
 				new ListScraping({
 					url: url,
 					groupSelector: ".row",
-					selectors: [".title", ".price"],
+					itemDescriptor: {
+						title: {
+							selector: "h2",
+							attribute: "textContent",
+						},
+						price: {
+							selector: ".price",
+							attribute: "textContent",
+						},
+						link: {
+							selector: "h2",
+							attribute: "href",
+						},
+					},
 					preActions: [
 						new Type({
 							element: "element",
@@ -304,24 +316,18 @@ describe("Scraper", () => {
 				})
 			);
 			step1.onData((data) => {
-				const step2 = new Step<string[]>();
-				step2.setInputs([step1 as Step<string[]>]);
-				step2.setStrategy(
-					new TextContentScraping({
-						selector: "selector",
-						nextPageSelector: "nextPageSelector",
-					})
-				);
+				const step2 = new Step();
 			});
 			const p = new Pipeline<string[]>([step1, step2]);
+
 			p.run();
 		});
-		test("no abstractions", () => {
+		test("no abstractions", async () => {
 			const url =
 				"https://www.amazon.com/s?k=rust&i=stripbooks-intl-ship&crid=DWQS7NQZTDOP&sprefix=rust%2Cstripbooks-intl-ship%2C243&ref=nb_sb_noss_1";
 			const browser = await chromium.launch();
 			const context = await browser.newContext();
-			const page = await context.newPage();
+			const page: Page = await context.newPage();
 			await page.goto(url);
 		});
 	});
