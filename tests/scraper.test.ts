@@ -1,7 +1,10 @@
 ﻿import { Browser, BrowserContext, Page } from "playwright";
 import { Pipeline, Spider } from "../src/Pipeline";
 import { Click, Type } from "../src/scraping-actions";
-import { ListScraping } from "../src/scraping-strategies/ListScraping";
+import {
+	ListScraping,
+	makeListScrapingItemDescriptor,
+} from "../src/scraping-strategies/ListScraping";
 const path = require("path");
 
 expect.extend({
@@ -382,26 +385,27 @@ describe("Scraper", () => {
 				nextPageSelector: "nextPageSelector",
 			});
 			const step1 = new Spider(strategy1);
+			const itemDescriptor = makeListScrapingItemDescriptor({
+				title: {
+					selector: "h5",
+					attribute: "textContent",
+				},
+				content: {
+					selector: "p",
+					attribute: "textContent",
+				},
+				rating: {
+					selector: ".rating",
+					attribute: "textContent",
+				},
+				date: {
+					selector: ".review-date",
+					attribute: "textContent",
+				},
+			});
 			const strategy2 = new ListScraping({
 				groupSelector: ".review",
-				itemDescriptor: {
-					title: {
-						selector: "h5",
-						attribute: "textContent",
-					},
-					content: {
-						selector: "p",
-						attribute: "textContent",
-					},
-					rating: {
-						selector: ".rating",
-						attribute: "textContent",
-					},
-					date: {
-						selector: ".review-date",
-						attribute: "textContent",
-					},
-				},
+				itemDescriptor,
 			});
 			const step2 = new Spider(strategy2);
 			step2.next = function (data) {

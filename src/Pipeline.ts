@@ -2,13 +2,13 @@
 import { ScrapingStrategy } from "./types";
 
 export class Pipeline<StrategyOutput> {
-	steps: Step<unknown>[];
-	constructor(steps: Step<unknown>[]) {
+	steps: Spider<unknown>[];
+	constructor(steps: Spider<unknown>[]) {
 		this.steps = steps;
 	}
 }
 
-export class Step<StrategyOutput, NextStrategyInput = StrategyOutput>
+export class Spider<StrategyOutput, NextStrategyInput = StrategyOutput>
 	implements Partial<Observer<NextStrategyInput>>
 {
 	next?: (value: NextStrategyInput) => void;

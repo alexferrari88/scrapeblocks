@@ -1,5 +1,6 @@
 ﻿import { Browser, BrowserContext, chromium, Page } from "playwright";
-import { Action, Hook, hookPointType, ScrapingStrategy } from "./types";
+import { Spider } from "./Pipeline";
+import { Hook, hookPointType, ScrapingStrategy } from "./types";
 import { USER_AGENTS } from "./utils/browser-config";
 const EventEmitter = require("node:events");
 
@@ -11,18 +12,13 @@ class Scraper<R> {
 	browser: Browser | undefined;
 	context: BrowserContext | undefined;
 	page: Page | undefined;
-	url: string;
-	strategies?: StrategiesType<R>;
-	actions: Action[] | undefined;
+	spiders?: Spider<R>[];
 	hooks: Hook[] | undefined;
-	eventsManager = new EventEmitter();
 
-	constructor(url: string, strategies?: StrategiesType<R>, actions?: Action[], hooks?: Hook[]) {
-		this.url = url;
-		this.actions = actions;
-		this.strategies = strategies;
-		this.hooks = hooks;
-		if (this.strategies) this.registerStrategies(this.strategies);
+	constructor(options: { spiders?: Spider<R>[]; hooks?: Hook[] }) {
+		this.spiders = options?.spiders;
+		this.hooks = options?.hooks;
+		// if (this.strategies) this.registerStrategies(this.strategies);
 	}
 
 	registerHooks(hooks: Hook[]) {
@@ -32,15 +28,9 @@ class Scraper<R> {
 		}
 	}
 
-	registerEventsManagerInStrategy(strategy: ScrapingStrategy<R>) {
-		strategy.eventsManager = this.eventsManager;
-	}
-
 	registerStrategies(strategies: StrategiesType<R>) {
 		for (const strategy of strategies) {
 			if (strategy.hooks) this.registerHooks(strategy.hooks);
-			if (!strategy.eventsManager)
-				this.registerEventsManagerInStrategy(strategy as unknown as ScrapingStrategy<R>);
 		}
 	}
 
@@ -95,34 +85,8 @@ class Scraper<R> {
 			this.page = await (this.context as BrowserContext).newPage();
 			await this.#runHooks("afterNewPage", this.page, this.context);
 		}
-		if (!this.url) throw new Error("URL is required");
-		try {
-			await this.#runHooks("beforeGoTo", this.page, this.context);
-			if (this.url) await this.page.goto(this.url);
-			await this.#runHooks("afterGoTo", this.page, this.context);
-		} catch (error) {
-			await this.#cleanup();
-			throw error;
-		}
-		if (this.actions) {
-			for (let action of this.actions) {
-				try {
-					await action.execute(this.page, this.context);
-				} catch (error) {
-					await this.#cleanup();
-					throw error;
-				}
-			}
-		}
-		// No strategy provided, just execute the
-		// actions and return the PlaywrightBlocks
-		if (!this?.strategies) {
-			await this.#runHooks("end", this.page, this.context);
-			return {
-				browser: this.browser as Browser,
-				context: this.context as BrowserContext,
-				page: this.page,
-			} as unknown as R;
+		for (const spider of this.spiders) {
+			await spider.run();
 		}
 
 		let result;

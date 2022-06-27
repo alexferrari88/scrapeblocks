@@ -2,13 +2,16 @@
 import { Action, Hook, ScrapingStrategy } from "../types";
 import { BaseStrategy } from "./BaseStrategy";
 
-type ListScrapingItemDescriptor = Record<
-	string,
-	{
-		selector: string;
-		attribute: "textContent" | "href";
-	}
->;
+type ListScrapingItemDescriptorValues = {
+	selector: string;
+	attribute: "textContent" | "href";
+};
+
+export const makeListScrapingItemDescriptor = <
+	T extends Record<string, ListScrapingItemDescriptorValues>
+>(
+	descriptor: T
+): Record<keyof T, ListScrapingItemDescriptorValues> => descriptor;
 
 const itemValueGetters = {
 	textContent: async (item: Locator, selector: string) =>
@@ -20,18 +23,18 @@ const itemValueGetters = {
 	},
 };
 
-export class ListScraping
+export class ListScraping<T extends string>
 	extends BaseStrategy
 	implements ScrapingStrategy<Record<string, string | string[]>>
 {
 	url?: string;
 	groupSelector: string;
-	itemDescriptor: ListScrapingItemDescriptor;
+	itemDescriptor: Record<T, ListScrapingItemDescriptorValues>;
 
 	constructor(options: {
 		url?: string;
 		groupSelector: string;
-		itemDescriptor: ListScrapingItemDescriptor;
+		itemDescriptor: Record<T, ListScrapingItemDescriptorValues>;
 		nextPageSelector?: string | ((page: Page) => Promise<void> | void);
 		preActions?: Action[];
 		postActions?: Action[];
@@ -47,7 +50,7 @@ export class ListScraping
 		this.itemDescriptor = options.itemDescriptor;
 	}
 
-	async *execute(page?: Page): AsyncIterable<Record<string, string | string[]>> {
+	async *execute(page?: Page): AsyncIterable<Record<T, string | string[]>> {
 		if (this.hooks) await this.runHooks(this.hooks, "beforeInStrategy", page);
 		let browser: Browser;
 		let context: BrowserContext;
@@ -57,8 +60,8 @@ export class ListScraping
 		}
 		this.assertUrlAndPage(page);
 		if (this.preActions) {
-			for (const action of this.preActions) {
-				action.execute(page);
+			for await (const action of this.preActions) {
+				await action.execute(page);
 			}
 		}
 		let hasNextPage = true;
@@ -67,11 +70,13 @@ export class ListScraping
 			const nGroups = await groups.count();
 			for (let i = 0; i < nGroups; i++) {
 				const item = groups.nth(i);
-				const itemResult: Record<string, string | string[]> = {};
+				const itemResult = {} as { [key in T]: string | string[] };
 				for (const [key, values] of Object.entries(this.itemDescriptor)) {
-					const selector = values.selector;
-					const value = await itemValueGetters[values.attribute](item, selector);
-					itemResult[key] = value;
+					const selector = (values as ListScrapingItemDescriptorValues).selector;
+					const value = await itemValueGetters[
+						(values as ListScrapingItemDescriptorValues).attribute
+					](item, selector);
+					itemResult[key as T] = value;
 				}
 				yield itemResult;
 			}
