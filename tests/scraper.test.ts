@@ -1,5 +1,5 @@
 ﻿import { Browser, BrowserContext, Page } from "playwright";
-import { Pipeline, Step } from "../src/Pipeline";
+import { Pipeline, Spider } from "../src/Pipeline";
 import { Click, Type } from "../src/scraping-actions";
 import { ListScraping } from "../src/scraping-strategies/ListScraping";
 const path = require("path");
@@ -312,7 +312,7 @@ describe("Scraper", () => {
 				],
 				nextPageSelector: "nextPageSelector",
 			});
-			const step1 = new Step(strategy1);
+			const step1 = new Spider(strategy1);
 			const strategy2 = new ListScraping({
 				groupSelector: ".review",
 				itemDescriptor: {
@@ -334,7 +334,7 @@ describe("Scraper", () => {
 					},
 				},
 			});
-			const step2 = new Step(strategy2);
+			const step2 = new Spider(strategy2);
 			step2.next = (data) => {};
 			step1.observer = step2;
 			const p = new Pipeline<string[]>([step1, step2]);
@@ -381,7 +381,7 @@ describe("Scraper", () => {
 				],
 				nextPageSelector: "nextPageSelector",
 			});
-			const step1 = new Step(strategy1);
+			const step1 = new Spider(strategy1);
 			const strategy2 = new ListScraping({
 				groupSelector: ".review",
 				itemDescriptor: {
@@ -403,8 +403,9 @@ describe("Scraper", () => {
 					},
 				},
 			});
-			const step2 = new Step(strategy2);
-			step2.next = (data) => {
+			const step2 = new Spider(strategy2);
+			step2.next = function (data) {
+				const url = data.link;
 				this.url = data[0];
 				this.execute();
 			};
