@@ -284,40 +284,59 @@ describe("Scraper", () => {
 		test("should scrape Amazon products and their reviews", () => {
 			const url = "https://amazon.com";
 			const keyword = "bbq";
-			const step1 = new Step();
-			step1.setStrategy(
-				new ListScraping({
-					url: url,
-					groupSelector: ".row",
-					itemDescriptor: {
-						title: {
-							selector: "h2",
-							attribute: "textContent",
-						},
-						price: {
-							selector: ".price",
-							attribute: "textContent",
-						},
-						link: {
-							selector: "h2",
-							attribute: "href",
-						},
+			const strategy1 = new ListScraping({
+				url: url,
+				groupSelector: ".row",
+				itemDescriptor: {
+					title: {
+						selector: "h2",
+						attribute: "textContent",
 					},
-					preActions: [
-						new Type({
-							element: "element",
-							value: keyword,
-						}),
-						new Click({
-							element: "element",
-						}),
-					],
-					nextPageSelector: "nextPageSelector",
-				})
-			);
-			step1.onData((data) => {
-				const step2 = new Step();
+					price: {
+						selector: ".price",
+						attribute: "textContent",
+					},
+					link: {
+						selector: "h2",
+						attribute: "href",
+					},
+				},
+				preActions: [
+					new Type({
+						element: "element",
+						value: keyword,
+					}),
+					new Click({
+						element: "element",
+					}),
+				],
+				nextPageSelector: "nextPageSelector",
 			});
+			const step1 = new Step(strategy1);
+			const strategy2 = new ListScraping({
+				groupSelector: ".review",
+				itemDescriptor: {
+					title: {
+						selector: "h5",
+						attribute: "textContent",
+					},
+					content: {
+						selector: "p",
+						attribute: "textContent",
+					},
+					rating: {
+						selector: ".rating",
+						attribute: "textContent",
+					},
+					date: {
+						selector: ".review-date",
+						attribute: "textContent",
+					},
+				},
+			});
+			const step2 = new Step(strategy2);
+			step2.next = (data) => {};
+			step1.observer = step2;
 			const p = new Pipeline<string[]>([step1, step2]);
 
 			p.run();
@@ -329,6 +348,66 @@ describe("Scraper", () => {
 			const context = await browser.newContext();
 			const page: Page = await context.newPage();
 			await page.goto(url);
+		});
+		test("refactor 2", async () => {
+			const scraper = new Scraper<string[]>();
+			const url = "https://amazon.com";
+			const keyword = "bbq";
+			const strategy1 = new ListScraping({
+				url: url,
+				groupSelector: ".row",
+				itemDescriptor: {
+					title: {
+						selector: "h2",
+						attribute: "textContent",
+					},
+					price: {
+						selector: ".price",
+						attribute: "textContent",
+					},
+					link: {
+						selector: "h2",
+						attribute: "href",
+					},
+				},
+				preActions: [
+					new Type({
+						element: "element",
+						value: keyword,
+					}),
+					new Click({
+						element: "element",
+					}),
+				],
+				nextPageSelector: "nextPageSelector",
+			});
+			const step1 = new Step(strategy1);
+			const strategy2 = new ListScraping({
+				groupSelector: ".review",
+				itemDescriptor: {
+					title: {
+						selector: "h5",
+						attribute: "textContent",
+					},
+					content: {
+						selector: "p",
+						attribute: "textContent",
+					},
+					rating: {
+						selector: ".rating",
+						attribute: "textContent",
+					},
+					date: {
+						selector: ".review-date",
+						attribute: "textContent",
+					},
+				},
+			});
+			const step2 = new Step(strategy2);
+			step2.next = (data) => {
+				this.url = data[0];
+				this.execute();
+			};
 		});
 	});
 });

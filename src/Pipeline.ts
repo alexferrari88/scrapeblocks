@@ -14,12 +14,14 @@ export class Step<StrategyOutput, NextStrategyInput = StrategyOutput>
 	next?: (value: NextStrategyInput) => void;
 	error?: (err: any) => void;
 	complete?: () => void;
+	inputValues?: NextStrategyInput;
 	strategy: ScrapingStrategy<StrategyOutput>;
 	observable?: Observable<StrategyOutput>;
 	observer?: Observer<StrategyOutput>;
 
-	constructor(strategy: ScrapingStrategy<StrategyOutput>) {
+	constructor(strategy: ScrapingStrategy<StrategyOutput>, inputValues?: NextStrategyInput) {
 		this.strategy = strategy;
+		this.inputValues = inputValues;
 	}
 
 	async run(): Promise<StrategyOutput | StrategyOutput[] | void> {
