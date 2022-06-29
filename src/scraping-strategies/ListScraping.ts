@@ -1,4 +1,4 @@
-﻿import { Browser, BrowserContext, Locator, Page } from "playwright";
+﻿import { Locator, Page } from "playwright";
 import { Action, Hook, ScrapingStrategy } from "../types";
 import { BaseStrategy } from "./BaseStrategy";
 
@@ -25,7 +25,7 @@ const itemValueGetters = {
 
 export class ListScraping<T extends string>
 	extends BaseStrategy
-	implements ScrapingStrategy<Record<string, string | string[]>>
+	implements ScrapingStrategy<Record<string, string[]>>
 {
 	url?: string;
 	groupSelector: string;
@@ -50,10 +50,12 @@ export class ListScraping<T extends string>
 		this.itemDescriptor = options.itemDescriptor;
 	}
 
-	async *execute(page?: Page): AsyncIterable<Record<T, string | string[]>> {
+	async *execute(options: {
+		page?: Page;
+		input?: string | string[];
+	}): AsyncIterable<Record<T, string[]>> {
+		let page = options?.page;
 		if (this.hooks) await this.runHooks(this.hooks, "beforeInStrategy", page);
-		let browser: Browser;
-		let context: BrowserContext;
 		if (!page && this.url) {
 			await this.createPageFromUrl(this.url);
 			page = this.page;
@@ -61,16 +63,16 @@ export class ListScraping<T extends string>
 		this.assertUrlAndPage(page);
 		if (this.preActions) {
 			for await (const action of this.preActions) {
-				await action.execute(page);
+				action.execute(page);
 			}
 		}
 		let hasNextPage = true;
 		while (hasNextPage) {
-			const groups = await page.locator(this.groupSelector);
+			const groups = page.locator(this.groupSelector);
 			const nGroups = await groups.count();
 			for (let i = 0; i < nGroups; i++) {
 				const item = groups.nth(i);
-				const itemResult = {} as { [key in T]: string | string[] };
+				const itemResult = {} as { [key in T]: string[] };
 				for (const [key, values] of Object.entries(this.itemDescriptor)) {
 					const selector = (values as ListScrapingItemDescriptorValues).selector;
 					const value = await itemValueGetters[
