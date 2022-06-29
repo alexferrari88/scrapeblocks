@@ -384,11 +384,15 @@ describe("Scraper", () => {
 				],
 				nextPageSelector: "nextPageSelector",
 			});
-			const step1 = new Spider(strategy1);
+			const step1 = new Spider({ strategy: strategy1 });
 			const itemDescriptor = makeListScrapingItemDescriptor({
 				title: {
 					selector: "h5",
 					attribute: "textContent",
+				},
+				link: {
+					selector: "h5",
+					attribute: "href",
 				},
 				content: {
 					selector: "p",
@@ -407,12 +411,12 @@ describe("Scraper", () => {
 				groupSelector: ".review",
 				itemDescriptor,
 			});
-			const step2 = new Spider(strategy2);
-			step2.next = function (data) {
-				const url = data.link;
-				this.url = data[0];
-				this.execute();
+			const nextFunc = (data: { [key in keyof typeof itemDescriptor]: string[] }) => {
+				if (!data?.link || !Array.isArray(data.link)) return;
+				(this as typeof step2).inputValues = data.link[0];
+				(this as typeof step2).execute();
 			};
+			const step2 = new Spider({ strategy: strategy2, next: nextFunc });
 		});
 	});
 });

@@ -19,14 +19,23 @@ export class Spider<StrategyOutput, NextStrategyInput = StrategyOutput>
 	observable?: Observable<StrategyOutput>;
 	observer?: Observer<StrategyOutput>;
 
-	constructor(strategy: ScrapingStrategy<StrategyOutput>, inputValues?: NextStrategyInput) {
-		this.strategy = strategy;
-		this.inputValues = inputValues;
+	constructor(options: {
+		strategy: ScrapingStrategy<StrategyOutput>;
+		inputValues?: NextStrategyInput;
+		next?: (value: NextStrategyInput) => void;
+		error?: (err: any) => void;
+		complete?: () => void;
+	}) {
+		this.strategy = options.strategy;
+		this.inputValues = options.inputValues;
+		this.next = options?.next;
+		this.error = options?.error;
+		this.complete = options?.complete;
 	}
 
 	async run(): Promise<StrategyOutput | StrategyOutput[] | void> {
 		if (!this.strategy) throw new Error("No strategy set");
-		const generator = this.strategy.execute();
+		const generator = this.strategy.execute({ input: this.inputValues });
 		if (this.observer) {
 			this.observable = from(generator);
 			this.observable.subscribe(this.observer);
